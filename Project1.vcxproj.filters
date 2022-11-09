@@ -26,5 +26,8 @@
     <Text Include="账号信息档案.txt">
       <Filter>源文件</Filter>
     </Text>
+    <Text Include="学生账号信息档案.txt">
+      <Filter>源文件</Filter>
+    </Text>
   </ItemGroup>
 </Project>

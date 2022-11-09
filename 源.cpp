@@ -6,7 +6,10 @@
 #include<stdlib.h>
 #include<math.h>
 #include<windows.h>
+#include<regex>
 using namespace std;
+
+
 
 struct student
 {
@@ -18,8 +21,11 @@ struct student
 	int math;
 	int Linear;
 	int C;
+	int total;
+	double grade;
 
 };
+
 
 char nam[20], number[20], s[5], tele[20];
 int ag;
@@ -29,8 +35,7 @@ struct users
 	char ac[30];
 	char pw[30];
 };
-struct users use[50];//结构体
-
+struct users use[50];
 struct Node
 {
 	struct student data;
@@ -40,19 +45,25 @@ struct Node* list;
 
 struct Node* createList();
 struct Node* createNode(struct student data);
+struct Node* sortStudentListByTotal(struct Node* head);
 void Hello();
 void registeruser();
+void registeruser1();
 void login();
+void login1();
 void help();
 void insertNodeByHead(struct Node* headNode);
 void deleteNode(struct Node* headNode);
 void change(struct Node* headNode);
 struct Node* searchInfoByData(struct Node* headNode);
+void printList1(struct Node* headNode);
 void printList(struct Node* headNode);
 void readInfoToFile(struct Node* headNode, char* fileName);
 void writeInfoToFile(struct Node* headNode, char* fileName);
 void menu();
+void menu1();
 void interaction();
+void interaction1();
 
 //创建信息表
 struct Node* createList()
@@ -80,9 +91,11 @@ void Hello()
 	printf("********************************************\n");
 	printf("**********学生信息管理系统登录界面**********\n");
 	printf("********************************************\n\n");
-	printf("\t\t1.-登录账号-\n");
-	printf("\t\t2.-注册账号-\n");
-	printf("\t\t3.-退出界面-\n\n");
+	printf("\t\t1.-教师登录账号-\n");
+	printf("\t\t2.-学生登录账号-\n");
+	printf("\t\t3.-教师注册账号-\n");
+	printf("\t\t4.-学生注册账号-\n");
+	printf("\t\t5.-退出界面-\n\n");
 	printf("******************欢迎使用******************\n");
 	printf("请选择：");
 	scanf("%d", &se);
@@ -92,9 +105,15 @@ void Hello()
 		login();
 		break;
 	case 2:
-		registeruser();
+		login1();
 		break;
 	case 3:
+		registeruser();
+		break;
+	case 4:
+		registeruser1();
+		break;
+	case 5:
 		printf("\n\t\t【成功退出】\n");
 		exit(0);
 		system("pause");
@@ -113,42 +132,132 @@ void registeruser()
 	int	i, a = 0;
 
 	printf("\t\t【注册帐号】\n");
-     FILE* fp = fopen("账号信息档案.txt", "ab");
+	FILE* fp = fopen("账号信息档案.txt", "ab");
+	printf("请输入用户账号和密码(账号、密码可以为数字,中文字母,英文字母,符号,密码必须6位)\n\n\n");
+	printf("\t请你输入账号：");
+
+	scanf("%s", &ac);
+	int flag = 0;
+	fp = fopen("账号信息档案.txt", "r");//读取文件操作
+	while (!feof(fp))
+	{
+		fscanf(fp, "%s", &use[a].ac);
+		if (strcmp(ac, use[a].ac) == 0)
+		{
+			flag = 1;
+			fclose(fp);
+			break;
+		}
+		a++;
+	}
+
+	if (flag == 1)
+	{
+		printf("该用户已存在");
+	}
+	else
+	{
+		strcpy(use[a].ac, ac);
+		printf("\n\t请你输入密码：");
+		for (i = 0; i < 6; i++)
+		{
+			pw[i] = _getch();
+			printf("*");
+			use[a].pw[i] = pw[i];
+			if (pw[i] == '\r')
+			{
+				printf("注册失败，请重新注册账号\n");
+				return;
+			}
+		}
+		
+			printf("\n\n\t再次确认密码：");
+			for (i = 0; i < 6; i++)
+			{
+
+				pd[i] = _getch();
+				printf("*");
+				if (use[a].pw[i] != pd[i])
+				{
+					printf("\n密码不对，请重新注册账号\n");
+					return;
+				}
+			}
+			fprintf(fp, "账号\t密码\n");
+			fprintf(fp, "%s\t%s\n", use[a].ac, use[a].pw);
+			printf("\n注册成功!!!\n");
+			fclose(fp);
+	    system("pause");
+		system("cls");
+	}
+}
+	
+
+void registeruser1()
+{
+	char ac[30];
+	char pw[6], pd[6];
+	int	i, a = 0;
+
+	printf("\t\t【注册帐号】\n");
+	FILE* fp = fopen("学生账号信息档案.txt", "ab");
 	printf("请输入用户账号和密码(账号、密码可以为数字,中文字母,英文字母,符号,密码必须6位)\n\n\n");
 	printf("\t请你输入账号：");
 	scanf("%s", &ac);
-	strcpy(use[a].ac, ac);
-	printf("\n\t请你输入密码：");
-	for (i = 0; i < 6; i++)
+	int flag = 0;
+	fp = fopen("学生账号信息档案.txt", "r");//读取文件操作
+	while (!feof(fp))
 	{
-		pw[i] = _getch();
-		printf("*");
-		use[a].pw[i] = pw[i];
-		if (pw[i] == '\r')
+		fscanf(fp, "%s", &use[a].ac);
+		if (strcmp(ac, use[a].ac) == 0)
 		{
-			printf("注册失败，请重新注册账号\n");
-			return;
+			flag = 1;
+			fclose(fp);
+			break;
 		}
+		a++;
 	}
-	printf("\n\n\t再次确认密码：");
-	for (i = 0; i < 6; i++)
+
+	if (flag == 1)
 	{
-	
-		pd[i] = _getch();
-		printf("*");
-		if (use[a].pw[i] != pd[i])
-		{
-			printf("\n密码不对，请重新注册账号\n");
-			return;
-		}
+		printf("该用户已存在");
 	}
-	fprintf(fp, "账号\t密码\n");
-	fprintf(fp, "%s\t%s\n", use[a].ac, use[a].pw);
-	printf("\n注册成功!!!\n");
-	fclose(fp);
+	else
+	{
+		strcpy(use[a].ac, ac);
+	    printf("\n\t请你输入密码：");
+	    for (i = 0; i < 6; i++)
+		{
+			pw[i] = _getch();
+			printf("*");
+			use[a].pw[i] = pw[i];
+			if (pw[i] == '\r')
+			{
+				printf("注册失败，请重新注册账号\n");
+				return;
+			}
+		}
+		printf("\n\n\t再次确认密码：");
+		for (i = 0; i < 6; i++)
+		{
+
+			pd[i] = _getch();
+			printf("*");
+			if (use[a].pw[i] != pd[i])
+			{
+				printf("\n密码不对，请重新注册账号\n");
+				return;
+			}
+		}
+		fprintf(fp, "账号\t密码\n");
+		fprintf(fp, "%s\t%s\n", use[a].ac, use[a].pw);
+		printf("\n注册成功!!!\n");
+		fclose(fp);
+	}
 	system("pause");
 	system("cls");
-}
+	}
+	
 
 //登录
 
@@ -211,6 +320,65 @@ void login()
 	}
 
 }
+void login1()
+{
+	char ac[30];
+	char ad[20], pw;
+	int	i, j, a = 0;
+	int	flag = 0;
+
+	printf("--------【登录账号】--------\n");
+	for (i = 0; i < 3; i++)
+	{
+		printf("请输入帐号:");
+		scanf("%s", ac);
+		printf("请输入密码:");
+		for (j = 0; j < 6; j++)
+		{
+			pw = _getch();
+			printf("*");
+			ad[j] = pw;
+		}
+		ad[6] = '\0';
+		FILE* fp;
+		fp = fopen("学生账号信息档案.txt", "r");//读取文件操作
+		while (!feof(fp))
+		{
+			fscanf(fp, "%s%s", &use[a].ac, &use[a].pw);
+			if ((strcmp(ac, use[a].ac) == 0) && (strcmp(ad, use[a].pw) == 0))
+			{
+				flag = 1;
+				fclose(fp);
+				break;
+			}
+			a++;
+		}
+
+		if (flag == 1)
+		{
+			printf("\n登录成功!");
+			printf("按任意键进入学生信息管理系统!\n");
+			system("pause");
+			system("cls");
+			while (1)
+			{
+				menu1();
+				interaction1();
+				system("pause");
+				system("cls");
+			}
+		}
+		else {
+			printf("\n账号或者密码输入错误，你还有%d次机会，请重新输入：\n", 2 - i);
+		}
+	}
+	if (i == 3)
+	{
+		printf("登录失败\n");
+		return;
+	}
+
+}
 
 //系统说明功能 
 void help()
@@ -238,7 +406,7 @@ void insertNodeByHead(struct Node* headNode)
 		if (strcmp(pMove->data.num, data.num) == 0)
 		{
 			printf("录入信息学号重复，请重新录入信息\n");
-			return;
+			pMove = pMove->next;
 		}
 		break;
 	}
@@ -343,8 +511,9 @@ struct Node* searchInfoByData(struct Node* headNode)
 	{
 		pMove = pMove->next;
 	}
-	printf("姓名\t学号\t年龄\t性别\t电话\t高数成绩\t线代成绩\t程序成绩\n");
-	printf("%s\t%s\t%d\t%s\t%s\t%d\t%d\t%d\n", pMove->data.name, pMove->data.num, pMove->data.age, pMove->data.sex, pMove->data.telephone, pMove->data.math, pMove->data.Linear, pMove->data.C);
+	printf("姓名\t学号\t年龄\t性别\t电话\t\t高数成绩\t线代成绩\t程序成绩\t总成绩\t学分\n");
+	pMove->data.grade = ((pMove->data.math / 10 - 5) * 5 + (pMove->data.Linear / 10 - 5) * 5 + (pMove->data.C / 10 - 5) * 3) / 13.0;
+	printf("%s\t%s\t%d\t%s\t%s\t%d\t\t%d\t\t%d\t\t%d\t%.2f\n", pMove->data.name, pMove->data.num, pMove->data.age, pMove->data.sex, pMove->data.telephone, pMove->data.math, pMove->data.Linear, pMove->data.C, pMove->data.total = pMove->data.math + pMove->data.Linear + pMove->data.C,pMove->data.grade);
 	return NULL;
 }
 
@@ -352,14 +521,59 @@ struct Node* searchInfoByData(struct Node* headNode)
 void printList(struct Node* headNode)
 {
 	struct Node* pMove = headNode->next;
-	printf("姓名\t学号\t年龄\t性别\t电话\t\t高数成绩\t线代成绩\t程序成绩\n");
+	printf("姓名\t学号\t年龄\t性别\t电话\t\t高数成绩\t线代成绩\t程序成绩\t总成绩\t绩点\n");
 	while (pMove)
 	{
-		printf("%s\t%s\t%d\t%s\t%s\t%d\t\t%d\t\t%d\n", pMove->data.name, pMove->data.num, pMove->data.age, pMove->data.sex, pMove->data.telephone, pMove->data.math, pMove->data.Linear, pMove->data.C);
+		pMove->data.grade = ((pMove->data.math / 10 - 5) * 5 + (pMove->data.Linear / 10.0 - 5) * 5 + (pMove->data.C / 10.0 - 5) * 3) / 13.0;
+		printf("%s\t%s\t%d\t%s\t%s\t%d\t\t%d\t\t%d\t\t%d\t%.2f\n", pMove->data.name, pMove->data.num, pMove->data.age, pMove->data.sex, pMove->data.telephone, pMove->data.math, pMove->data.Linear, pMove->data.C, pMove->data.total = pMove->data.math + pMove->data.Linear + pMove->data.C, pMove->data.grade);
 		pMove = pMove->next;
 	}
 	printf("\n");
 }
+void printList1(struct Node* headNode)
+{
+	struct Node* pMove = headNode->next;
+	printf("姓名\t高数成绩\t线代成绩\t程序成绩\t总成绩\t绩点\n");
+	while (pMove)
+	{
+		pMove->data.grade = ((pMove->data.math / 10.0 - 5) * 5 + (pMove->data.Linear / 10 - 5) * 5 + (pMove->data.C / 10 - 5) * 3) / 13.0;
+		printf("%s\t%d\t\t%d\t\t%d\t\t%d\t%.2f\n", pMove->data.name, pMove->data.math, pMove->data.Linear, pMove->data.C, pMove->data.total = pMove->data.math + pMove->data.Linear + pMove->data.C, pMove->data.grade);
+		pMove = pMove->next;
+	}
+	printf("\n");
+}
+//总成绩排名
+struct Node* sortStudentListByTotal(struct Node* head)
+{
+	if (head != NULL)
+	{
+		struct Node* p1, * p2, * max;
+		struct student s;
+
+		p1 = head;
+// 简单选择排序
+		while ((p1 = p1->next) != NULL)
+		{
+			max = p1;
+			p2 = p1;
+			while ((p2 = p2->next) != NULL)
+			{
+				if ((p2->data).total > (max->data).total)
+					max = p2;
+			}
+
+			if (max != p1)
+			{
+				s = p1->data;
+				p1->data = max->data;
+				max->data = s;
+			}
+		}
+	}
+	return head;
+}
+
+
 
 //文件的读取
 void readInfoToFile(struct Node* headNode,const char* fileName)
@@ -377,7 +591,7 @@ void readInfoToFile(struct Node* headNode,const char* fileName)
 	{
 		memset(&data, 0, sizeof(student));
 		//2、读文件 
-		while (fscanf(fp,"%s\t%s\t%d\t%s\t%s\t%d\t%d\t%d", data.name,data.num, &data.age, data.sex, data.telephone,&data.math,&data.Linear,&data.C)!= EOF)
+		while (fscanf(fp,"%s\t%s\t%d\t%s\t%s\t%d\t%d\t%d\t%d\t%.2f", data.name,data.num, &data.age, data.sex, data.telephone,&data.math,&data.Linear,&data.C,&data.total,&data.grade)!= EOF)
 		{
 			struct Node* newNode = createNode(data);
 			newNode->next = headNode->next;
@@ -390,7 +604,7 @@ void readInfoToFile(struct Node* headNode,const char* fileName)
 }
 
 //文件的存储
-void writeInfoToFile(struct Node* headNode,const char* fileName)
+void writeInfoToFile(struct Node* headNode, const char* fileName)
 {
 	FILE* fp;
 	fp = fopen(fileName, "wt");
@@ -401,7 +615,8 @@ void writeInfoToFile(struct Node* headNode,const char* fileName)
 	struct Node* pMove = headNode->next;
 	while (pMove)
 	{
-		fprintf(fp, "%s\t%s\t%d\t%s\t%s\t%d\t%d\t%d\n", pMove->data.name, pMove->data.num, pMove->data.age, pMove->data.sex, pMove->data.telephone, pMove->data.math, pMove->data.Linear, pMove->data.C);
+		pMove->data.grade = ((pMove->data.math / 10.0 - 5) * 5 + (pMove->data.Linear / 10 - 5) * 5 + (pMove->data.C / 10 - 5) * 3) / 13.0;
+		fprintf(fp, "%s\t%s\t%d\t%s\t%s\t%d\t%d\t%d\t%d\t%.2f\n", pMove->data.name, pMove->data.num, pMove->data.age, pMove->data.sex, pMove->data.telephone, pMove->data.math, pMove->data.Linear, pMove->data.C,pMove->data.total,pMove->data.grade);
 		pMove = pMove->next;
 	}
 	//关闭文件 
@@ -424,7 +639,25 @@ void menu()
 	printf("*\t\t│3.修改信息│\t\t    *\n");
 	printf("*\t\t│4.删除信息│\t\t    *\n");
 	printf("*\t\t│5.查找信息│\t\t    *\n");
-	printf("*\t\t│6.退出系统│\t\t    *\n");
+	printf("*\t\t│6.查看排名│\t\t    *\n");
+	printf("*\t\t│7.退出系统│\t\t    *\n");
+	printf("*\t\t└──────────┘\t\t    *\n");
+	printf("*                                           *\n");
+	printf("******************欢迎使用*******************\n\n");
+}
+void menu1()
+{
+	//所有操作都同步到文件
+	printf("*********************************************\n");
+	printf("------------【学生信息管理系统】-------------\n");
+	printf("*********************************************\n\n");
+	printf("****************系统功能菜单*****************\n");
+	printf("*                                           *\n");
+	printf("*\t\t┌──────────┐\t\t    *\n");
+	printf("*\t\t│0.系统说明│\t\t    *\n");
+	printf("*\t\t│1.查看信息│\t\t    *\n");
+	printf("*\t\t│2.查看排名│\t\t    *\n");
+	printf("*\t\t│3.退出系统│\t\t    *\n");
 	printf("*\t\t└──────────┘\t\t    *\n");
 	printf("*                                           *\n");
 	printf("******************欢迎使用*******************\n\n");
@@ -463,6 +696,42 @@ void interaction()
 		searchInfoByData(list);
 		break;
 	case 6:
+		printf("\n--------【查看排名】--------\n");
+		sortStudentListByTotal(list);
+		printList(list);
+		break;
+	case 7:
+		printf("\n--------【系统已退出】-------\n");
+		system("pause");
+		writeInfoToFile(list, "学生信息档案.txt");
+		exit(0);
+		break;
+	default:
+		printf("选择错误，请重新输入\n");
+		break;
+	}
+}
+void interaction1()
+{
+	int choice;
+	printf("请选择您想使用的功能：");
+	scanf("%d", &choice);
+	switch (choice)
+	{
+	case 0:
+		printf("\n--------【系统说明】--------");
+		help();
+		break;
+	case 1:
+		printf("\n--------【查看信息】--------\n");
+		searchInfoByData(list);
+		break;
+	case 2:
+		printf("\n--------【查看排名】--------\n");
+		sortStudentListByTotal(list);
+		printList1(list);
+		break;
+	case 3:
 		printf("\n--------【系统已退出】-------\n");
 		system("pause");
 		writeInfoToFile(list, "学生信息档案.txt");

@@ -1,2 +1,5 @@
 ﻿  源.cpp
+C:\Users\HP\Desktop\Project1\Project1\源.cpp(594,20): warning C4476: "fscanf": 格式说明符中的类型字段字符“.”未知
+C:\Users\HP\Desktop\Project1\Project1\源.cpp(594,164): warning C4474: fscanf: 格式字符串中传递的参数太多
+C:\Users\HP\Desktop\Project1\Project1\源.cpp(594,164): message : 占位符和其参数预计 9 可变参数，但提供的却是 10 参数
   Project1.vcxproj -> C:\Users\HP\Desktop\Project1\Debug\Project1.exe

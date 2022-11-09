@@ -143,6 +143,7 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="学生信息档案.txt" />
+    <Text Include="学生账号信息档案.txt" />
     <Text Include="账号信息档案.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
