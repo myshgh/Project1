@@ -6,9 +6,6 @@
 #include<stdlib.h>
 #include<math.h>
 #include<windows.h>
-#include<regex>
-using namespace std;
-
 
 
 struct student
@@ -524,8 +521,8 @@ void printList(struct Node* headNode)
 	printf("姓名\t学号\t年龄\t性别\t电话\t\t高数成绩\t线代成绩\t程序成绩\t总成绩\t绩点\n");
 	while (pMove)
 	{
-		pMove->data.grade = ((pMove->data.math / 10 - 5) * 5 + (pMove->data.Linear / 10.0 - 5) * 5 + (pMove->data.C / 10.0 - 5) * 3) / 13.0;
-		printf("%s\t%s\t%d\t%s\t%s\t%d\t\t%d\t\t%d\t\t%d\t%.2f\n", pMove->data.name, pMove->data.num, pMove->data.age, pMove->data.sex, pMove->data.telephone, pMove->data.math, pMove->data.Linear, pMove->data.C, pMove->data.total = pMove->data.math + pMove->data.Linear + pMove->data.C, pMove->data.grade);
+		pMove->data.grade = ((pMove->data.math / 10.0 - 5) * 5 + (pMove->data.Linear / 10 - 5) * 5 + (pMove->data.C / 10 - 5) * 3) / 13.0;
+		printf("%s\t%s\t%d\t%s\t%s\t%d\t\t%d\t\t%d\t\t%d\t%.2f\n", pMove->data.name, pMove->data.num, pMove->data.age, pMove->data.sex, pMove->data.telephone, pMove->data.math, pMove->data.Linear, pMove->data.C, pMove->data.total = pMove->data.math + pMove->data.Linear + pMove->data.C, pMove->data.grade );
 		pMove = pMove->next;
 	}
 	printf("\n");
@@ -591,7 +588,7 @@ void readInfoToFile(struct Node* headNode,const char* fileName)
 	{
 		memset(&data, 0, sizeof(student));
 		//2、读文件 
-		while (fscanf(fp,"%s\t%s\t%d\t%s\t%s\t%d\t%d\t%d\t%d\t%.2f", data.name,data.num, &data.age, data.sex, data.telephone,&data.math,&data.Linear,&data.C,&data.total,&data.grade)!= EOF)
+	    while (fscanf(fp,"%s\t%s\t%d\t%s\t%s\t%d\t%d\t%d\t%d\t%.2f", data.name,data.num, &data.age, data.sex, data.telephone,&data.math,&data.Linear,&data.C,&data.total,&data.grade)!= EOF)
 		{
 			struct Node* newNode = createNode(data);
 			newNode->next = headNode->next;
@@ -615,8 +612,7 @@ void writeInfoToFile(struct Node* headNode, const char* fileName)
 	struct Node* pMove = headNode->next;
 	while (pMove)
 	{
-		pMove->data.grade = ((pMove->data.math / 10.0 - 5) * 5 + (pMove->data.Linear / 10 - 5) * 5 + (pMove->data.C / 10 - 5) * 3) / 13.0;
-		fprintf(fp, "%s\t%s\t%d\t%s\t%s\t%d\t%d\t%d\t%d\t%.2f\n", pMove->data.name, pMove->data.num, pMove->data.age, pMove->data.sex, pMove->data.telephone, pMove->data.math, pMove->data.Linear, pMove->data.C,pMove->data.total,pMove->data.grade);
+		fprintf(fp, "%s\t%s\t%d\t%s\t%s\t%d\t%d\t%d\t%d\t%.2f\n", pMove->data.name, pMove->data.num, pMove->data.age, pMove->data.sex, pMove->data.telephone, pMove->data.math, pMove->data.Linear, pMove->data.C, pMove->data.total = pMove->data.math + pMove->data.Linear + pMove->data.C, pMove->data.grade = ((pMove->data.math / 10.0 - 5) * 5 + (pMove->data.Linear / 10 - 5) * 5 + (pMove->data.C / 10 - 5) * 3) / 13.0);
 		pMove = pMove->next;
 	}
 	//关闭文件 
