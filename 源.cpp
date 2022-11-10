@@ -2,10 +2,15 @@
 #include <stdio.h>
 #include <tchar.h>
 #include <conio.h>
-#include<string.h>
-#include<stdlib.h>
-#include<math.h>
-#include<windows.h>
+#include <string.h>
+#include <stdlib.h>
+#include <math.h>
+#include <windows.h>
+#include <regex>
+#include <iostream>
+#include <string>
+using namespace std;
+
 
 
 struct student
@@ -268,14 +273,34 @@ void login()
 	printf("--------【登录账号】--------\n");
 	for (i = 0; i < 3; i++)
 	{
-		printf("请输入帐号:");
-		scanf("%s", ac);
-		printf("请输入密码:");
-		for (j = 0; j < 6; j++)
+		
+			printf("请输入帐号:");
+			scanf("%s", ac);
+			printf("请输入密码:");
+			int index = 0;
+		while (index < 6)
 		{
 			pw = _getch();
-			printf("*");
-			ad[j] = pw;
+			string pattern("^\\w+$");
+			regex r(pattern);
+			smatch results;
+			ad[index] = pw;
+			ad[index + 1] = '\0';
+			string inputChar = ad;
+			if (regex_match(inputChar, results, r))
+			{
+				printf("*");
+				ad[index++] = pw;
+			}
+			else
+			{
+				if (index > 0 && pw == VK_BACK)
+				{
+					printf("\b\b");
+					ad[index--] = '\0';
+				}
+			}
+			
 		}
 		ad[6] = '\0';
 		FILE* fp;
@@ -396,9 +421,21 @@ void insertNodeByHead(struct Node* headNode)
 	struct student data;
 	struct Node* pMove = headNode->next;
 	printf("请输入学生姓名，学号，年龄，性别，电话，高数成绩，线代成绩，程序设计成绩：\n");
-	scanf("%s%s%d%s%s%d%d%d", &data.name, &data.num, &data.age, &data.sex, &data.telephone,&data.math,&data.Linear,&data.C);
-	data.total = data.C + data.math + data.Linear;
-	data.grade = ((data.math / 10.0 - 5) * 5 + (data.Linear / 10.0 - 5) * 5 + (data.C / 10.0 - 5) * 3) / 13.0;
+	scanf("%s%s%d%s%s", &data.name, &data.num, &data.age, &data.sex, &data.telephone);
+	string pattern("^(?: (?: \\+|00)86)?1[3-9]\\d{9}$");
+	string numbers=data.telephone;
+	regex r(pattern);
+	smatch results;
+	if (regex_match(numbers, results, r))
+	{
+		scanf("%d%d%d", &data.math, &data.Linear, &data.C);
+		data.total = data.C + data.math + data.Linear;
+		data.grade = ((data.math / 10.0 - 5) * 5 + (data.Linear / 10.0 - 5) * 5 + (data.C / 10.0 - 5) * 3) / 13.0;
+	}
+	else 
+	{
+	       printf("请输入正确的电话号");
+	}
 
 	while (pMove != NULL)
 	{
@@ -673,6 +710,7 @@ void interaction()
 	case 1:
 		printf("\n--------【录入信息】--------\n");
 		insertNodeByHead(list);
+		writeInfoToFile(list, "学生信息档案.txt");
 		break;
 	case 2:
 		printf("\n--------【浏览信息】--------\n");
@@ -685,6 +723,7 @@ void interaction()
 	case 4:
 		printf("\n--------【删除信息】--------\n");
 		deleteNode(list);
+		writeInfoToFile(list, "学生信息档案.txt");
 		break;
 	case 5:
 		printf("\n--------【查找信息】--------\n");
@@ -739,7 +778,7 @@ void interaction1()
 }
 
 int main() {
-	//system("color 81");
+	system("color 81");
 	list = createList();
 	readInfoToFile(list, "学生信息档案.txt");
 
