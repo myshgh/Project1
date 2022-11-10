@@ -397,15 +397,17 @@ void insertNodeByHead(struct Node* headNode)
 	struct Node* pMove = headNode->next;
 	printf("请输入学生姓名，学号，年龄，性别，电话，高数成绩，线代成绩，程序设计成绩：\n");
 	scanf("%s%s%d%s%s%d%d%d", &data.name, &data.num, &data.age, &data.sex, &data.telephone,&data.math,&data.Linear,&data.C);
+	data.total = data.C + data.math + data.Linear;
+	data.grade = ((data.math / 10.0 - 5) * 5 + (data.Linear / 10.0 - 5) * 5 + (data.C / 10.0 - 5) * 3) / 13.0;
 
 	while (pMove != NULL)
 	{
-		if (strcmp(pMove->data.num, data.num) == 0)
+		if(strcmp(pMove->data.num, data.num) == 0)
 		{
 			printf("录入信息学号重复，请重新录入信息\n");
-			pMove = pMove->next;
+			break;
 		}
-		break;
+		pMove = pMove->next;
 	}
 	struct Node* newNode = createNode(data);
 	newNode->next = headNode->next;
@@ -508,9 +510,8 @@ struct Node* searchInfoByData(struct Node* headNode)
 	{
 		pMove = pMove->next;
 	}
-	printf("姓名\t学号\t年龄\t性别\t电话\t\t高数成绩\t线代成绩\t程序成绩\t总成绩\t学分\n");
-	pMove->data.grade = ((pMove->data.math / 10 - 5) * 5 + (pMove->data.Linear / 10 - 5) * 5 + (pMove->data.C / 10 - 5) * 3) / 13.0;
-	printf("%s\t%s\t%d\t%s\t%s\t%d\t\t%d\t\t%d\t\t%d\t%.2f\n", pMove->data.name, pMove->data.num, pMove->data.age, pMove->data.sex, pMove->data.telephone, pMove->data.math, pMove->data.Linear, pMove->data.C, pMove->data.total = pMove->data.math + pMove->data.Linear + pMove->data.C,pMove->data.grade);
+	printf("姓名\t学号\t年龄\t性别\t电话\t\t高数成绩\t线代成绩\t程序成绩\t总成绩\t绩点\n");
+	printf("%s\t%s\t%d\t%s\t%s\t%d\t\t%d\t\t%d\t\t%d\t%.2lf\n", pMove->data.name, pMove->data.num, pMove->data.age, pMove->data.sex, pMove->data.telephone, pMove->data.math, pMove->data.Linear, pMove->data.C, pMove->data.total , pMove->data.grade );
 	return NULL;
 }
 
@@ -521,8 +522,7 @@ void printList(struct Node* headNode)
 	printf("姓名\t学号\t年龄\t性别\t电话\t\t高数成绩\t线代成绩\t程序成绩\t总成绩\t绩点\n");
 	while (pMove)
 	{
-		pMove->data.grade = ((pMove->data.math / 10.0 - 5) * 5 + (pMove->data.Linear / 10 - 5) * 5 + (pMove->data.C / 10 - 5) * 3) / 13.0;
-		printf("%s\t%s\t%d\t%s\t%s\t%d\t\t%d\t\t%d\t\t%d\t%.2f\n", pMove->data.name, pMove->data.num, pMove->data.age, pMove->data.sex, pMove->data.telephone, pMove->data.math, pMove->data.Linear, pMove->data.C, pMove->data.total = pMove->data.math + pMove->data.Linear + pMove->data.C, pMove->data.grade );
+		printf("%s\t%s\t%d\t%s\t%s\t%d\t\t%d\t\t%d\t\t%d\t%.2lf\n", pMove->data.name, pMove->data.num, pMove->data.age, pMove->data.sex, pMove->data.telephone, pMove->data.math, pMove->data.Linear, pMove->data.C, pMove->data.total, pMove->data.grade); 
 		pMove = pMove->next;
 	}
 	printf("\n");
@@ -533,8 +533,7 @@ void printList1(struct Node* headNode)
 	printf("姓名\t高数成绩\t线代成绩\t程序成绩\t总成绩\t绩点\n");
 	while (pMove)
 	{
-		pMove->data.grade = ((pMove->data.math / 10.0 - 5) * 5 + (pMove->data.Linear / 10 - 5) * 5 + (pMove->data.C / 10 - 5) * 3) / 13.0;
-		printf("%s\t%d\t\t%d\t\t%d\t\t%d\t%.2f\n", pMove->data.name, pMove->data.math, pMove->data.Linear, pMove->data.C, pMove->data.total = pMove->data.math + pMove->data.Linear + pMove->data.C, pMove->data.grade);
+		printf("%s\t%s\t%d\t%s\t%s\t%d\t\t%d\t\t%d\t\t%d\t%.2lf\n", pMove->data.name, pMove->data.num, pMove->data.age, pMove->data.sex, pMove->data.telephone, pMove->data.math, pMove->data.Linear, pMove->data.C, pMove->data.total, pMove->data.grade);
 		pMove = pMove->next;
 	}
 	printf("\n");
@@ -588,11 +587,11 @@ void readInfoToFile(struct Node* headNode,const char* fileName)
 	{
 		memset(&data, 0, sizeof(student));
 		//2、读文件 
-	    while (fscanf(fp,"%s\t%s\t%d\t%s\t%s\t%d\t%d\t%d\t%d\t%.2f", data.name,data.num, &data.age, data.sex, data.telephone,&data.math,&data.Linear,&data.C,&data.total,&data.grade)!= EOF)
+	    while (fscanf(fp,"%s\t%s\t%d\t%s\t%s\t%d\t%d\t%d\t%d\t%lf", &data.name,&data.num, &data.age, &data.sex, &data.telephone,&data.math,&data.Linear,&data.C,&data.total,&data.grade)!= EOF)
 		{
 			struct Node* newNode = createNode(data);
 			newNode->next = headNode->next;
-			headNode->next = newNode;
+			 headNode->next=newNode ;
 		}
 	}
 
@@ -604,7 +603,7 @@ void readInfoToFile(struct Node* headNode,const char* fileName)
 void writeInfoToFile(struct Node* headNode, const char* fileName)
 {
 	FILE* fp;
-	fp = fopen(fileName, "wt");
+	fp = fopen(fileName, "wt+");
 	if (fp == NULL)
 	{
 		printf("文件打开失败！\n");
@@ -612,7 +611,7 @@ void writeInfoToFile(struct Node* headNode, const char* fileName)
 	struct Node* pMove = headNode->next;
 	while (pMove)
 	{
-		fprintf(fp, "%s\t%s\t%d\t%s\t%s\t%d\t%d\t%d\t%d\t%.2f\n", pMove->data.name, pMove->data.num, pMove->data.age, pMove->data.sex, pMove->data.telephone, pMove->data.math, pMove->data.Linear, pMove->data.C, pMove->data.total = pMove->data.math + pMove->data.Linear + pMove->data.C, pMove->data.grade = ((pMove->data.math / 10.0 - 5) * 5 + (pMove->data.Linear / 10 - 5) * 5 + (pMove->data.C / 10 - 5) * 3) / 13.0);
+		fprintf(fp, "%s\t%s\t%d\t%s\t%s\t%d\t%d\t%d\t%d\t%.2lf\n", pMove->data.name, pMove->data.num, pMove->data.age, pMove->data.sex, pMove->data.telephone, pMove->data.math, pMove->data.Linear, pMove->data.C, pMove->data.total, pMove->data.grade );
 		pMove = pMove->next;
 	}
 	//关闭文件 
@@ -698,8 +697,8 @@ void interaction()
 		break;
 	case 7:
 		printf("\n--------【系统已退出】-------\n");
-		system("pause");
 		writeInfoToFile(list, "学生信息档案.txt");
+		system("pause");
 		exit(0);
 		break;
 	default:
@@ -740,7 +739,7 @@ void interaction1()
 }
 
 int main() {
-	system("color 81");
+	//system("color 81");
 	list = createList();
 	readInfoToFile(list, "学生信息档案.txt");
 
