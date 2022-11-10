@@ -434,7 +434,8 @@ void insertNodeByHead(struct Node* headNode)
 	}
 	else 
 	{
-	       printf("请输入正确的电话号");
+	        printf("请输入正确的电话号");
+			return;
 	}
 
 	while (pMove != NULL)
@@ -486,13 +487,26 @@ void change(struct Node* headNode)
 	printf("请输入要修改信息的学生学号：\n");
 	scanf("%s", &number);
 
-	struct Node* changeNode = headNode->next;
+	struct Node* changeheadNode = headNode;
+	struct Node*changeNode= headNode->next;
+	
 	if (changeNode == NULL)
 	{
 		printf("数据为空，无法改变！\n");
 	}
 	else
 	{
+		while ( strcmp(changeNode->data.num, number))
+		{
+			changeheadNode = changeNode;
+			changeNode = changeheadNode->next;
+			if (changeNode == NULL)
+			{
+				printf("未找到指定位置，无法删除！\n");
+				return;
+			}
+		
+		}	
 		if (0 == strcmp(changeNode->data.num, number))
 		{
 			printf("请输入该学生要改变的信息选项：1、姓名 2、电话号码  3、年龄\n");
@@ -530,6 +544,8 @@ void change(struct Node* headNode)
 			}
 		}
 	}
+		
+	
 }
 
 //查找功能
@@ -719,6 +735,7 @@ void interaction()
 	case 3:
 		printf("\n--------【修改信息】--------\n");
 		change(list);
+		writeInfoToFile(list, "学生信息档案.txt");
 		break;
 	case 4:
 		printf("\n--------【删除信息】--------\n");
