@@ -512,6 +512,10 @@ void change(struct Node* headNode)
 			printf("请输入该学生要改变的信息选项：1、姓名 2、电话号码  3、年龄\n");
 			int choose;
 			scanf("%d", &choose);
+			string pattern("^(?: (?: \\+|00)86)?1[3-9]\\d{9}$");
+			string numbers = tele;
+			regex r(pattern);
+			smatch results;
 			switch (choose)
 			{
 			case 1:
@@ -525,9 +529,17 @@ void change(struct Node* headNode)
 			case 2:
 				printf("请输入您要修改的电话号码");
 				scanf("%s", &tele);
-				printf("修改的电话号码为：%s\n", tele);
+				if (regex_match(numbers, results, r))
+				{
+					printf("修改的电话号码为：%s\n", tele);
 				strcpy(changeNode->data.telephone, tele);
 				printf("修改电话号码成功！\n");
+				}
+				else
+				{
+					printf("请输入正确的电话号");
+				}
+				
 				break;
 
 			case 3:
