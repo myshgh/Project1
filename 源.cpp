@@ -172,28 +172,28 @@ void registeruser()
 				return;
 			}
 		}
-		
-			printf("\n\n\t再次确认密码：");
-			for (i = 0; i < 6; i++)
-			{
 
-				pd[i] = _getch();
-				printf("*");
-				if (use[a].pw[i] != pd[i])
-				{
-					printf("\n密码不对，请重新注册账号\n");
-					return;
-				}
+		printf("\n\n\t再次确认密码：");
+		for (i = 0; i < 6; i++)
+		{
+
+			pd[i] = _getch();
+			printf("*");
+			if (use[a].pw[i] != pd[i])
+			{
+				printf("\n密码不对，请重新注册账号\n");
+				return;
 			}
-			fprintf(fp, "账号\t密码\n");
-			fprintf(fp, "%s\t%s\n", use[a].ac, use[a].pw);
-			printf("\n注册成功!!!\n");
-			fclose(fp);
-	    system("pause");
+		}
+		fprintf(fp, "账号\t密码\n");
+		fprintf(fp, "%s\t%s\n", use[a].ac, use[a].pw);
+		printf("\n注册成功!!!\n");
+		fclose(fp);
+		system("pause");
 		system("cls");
 	}
 }
-	
+
 
 void registeruser1()
 {
@@ -227,8 +227,8 @@ void registeruser1()
 	else
 	{
 		strcpy(use[a].ac, ac);
-	    printf("\n\t请你输入密码：");
-	    for (i = 0; i < 6; i++)
+		printf("\n\t请你输入密码：");
+		for (i = 0; i < 6; i++)
 		{
 			pw[i] = _getch();
 			printf("*");
@@ -258,8 +258,8 @@ void registeruser1()
 	}
 	system("pause");
 	system("cls");
-	}
-	
+}
+
 
 //登录
 
@@ -273,11 +273,11 @@ void login()
 	printf("--------【登录账号】--------\n");
 	for (i = 0; i < 3; i++)
 	{
-		
-			printf("请输入帐号:");
-			scanf("%s", ac);
-			printf("请输入密码:");
-			int index = 0;
+
+		printf("请输入帐号:");
+		scanf("%s", ac);
+		printf("请输入密码:");
+		int index = 0;
 		while (index < 6)
 		{
 			pw = _getch();
@@ -296,11 +296,11 @@ void login()
 			{
 				if (index > 0 && pw == VK_BACK)
 				{
-					printf("\b\b");
+					printf("\b \b");
 					ad[index--] = '\0';
 				}
 			}
-			
+
 		}
 		ad[6] = '\0';
 		FILE* fp;
@@ -352,14 +352,34 @@ void login1()
 	printf("--------【登录账号】--------\n");
 	for (i = 0; i < 3; i++)
 	{
+
 		printf("请输入帐号:");
 		scanf("%s", ac);
 		printf("请输入密码:");
-		for (j = 0; j < 6; j++)
+		int index = 0;
+		while (index < 6)
 		{
 			pw = _getch();
-			printf("*");
-			ad[j] = pw;
+			string pattern("^\\w+$");
+			regex r(pattern);
+			smatch results;
+			ad[index] = pw;
+			ad[index + 1] = '\0';
+			string inputChar = ad;
+			if (regex_match(inputChar, results, r))
+			{
+				printf("*");
+				ad[index++] = pw;
+			}
+			else
+			{
+				if (index > 0 && pw == VK_BACK)
+				{
+					printf("\b \b");
+					ad[index--] = '\0';
+				}
+			}
+
 		}
 		ad[6] = '\0';
 		FILE* fp;
@@ -384,8 +404,8 @@ void login1()
 			system("cls");
 			while (1)
 			{
-				menu1();
-				interaction1();
+				menu();
+				interaction();
 				system("pause");
 				system("cls");
 			}
@@ -423,7 +443,7 @@ void insertNodeByHead(struct Node* headNode)
 	printf("请输入学生姓名，学号，年龄，性别，电话，高数成绩，线代成绩，程序设计成绩：\n");
 	scanf("%s%s%d%s%s", &data.name, &data.num, &data.age, &data.sex, &data.telephone);
 	string pattern("^(?: (?: \\+|00)86)?1[3-9]\\d{9}$");
-	string numbers=data.telephone;
+	string numbers = data.telephone;
 	regex r(pattern);
 	smatch results;
 	if (regex_match(numbers, results, r))
@@ -432,15 +452,15 @@ void insertNodeByHead(struct Node* headNode)
 		data.total = data.C + data.math + data.Linear;
 		data.grade = ((data.math / 10.0 - 5) * 5 + (data.Linear / 10.0 - 5) * 5 + (data.C / 10.0 - 5) * 3) / 13.0;
 	}
-	else 
+	else
 	{
-	        printf("请输入正确的电话号");
-			return;
+		printf("请输入正确的电话号");
+		return;
 	}
 
 	while (pMove != NULL)
 	{
-		if(strcmp(pMove->data.num, data.num) == 0)
+		if (strcmp(pMove->data.num, data.num) == 0)
 		{
 			printf("录入信息学号重复，请重新录入信息\n");
 			break;
@@ -488,15 +508,15 @@ void change(struct Node* headNode)
 	scanf("%s", &number);
 
 	struct Node* changeheadNode = headNode;
-	struct Node*changeNode= headNode->next;
-	
+	struct Node* changeNode = headNode->next;
+
 	if (changeNode == NULL)
 	{
 		printf("数据为空，无法改变！\n");
 	}
 	else
 	{
-		while ( strcmp(changeNode->data.num, number))
+		while (strcmp(changeNode->data.num, number))
 		{
 			changeheadNode = changeNode;
 			changeNode = changeheadNode->next;
@@ -505,8 +525,8 @@ void change(struct Node* headNode)
 				printf("未找到指定位置，无法删除！\n");
 				return;
 			}
-		
-		}	
+
+		}
 		if (0 == strcmp(changeNode->data.num, number))
 		{
 			printf("请输入该学生要改变的信息选项：1、姓名 2、电话号码  3、年龄\n");
@@ -532,14 +552,14 @@ void change(struct Node* headNode)
 				if (regex_match(numbers, results, r))
 				{
 					printf("修改的电话号码为：%s\n", tele);
-				strcpy(changeNode->data.telephone, tele);
-				printf("修改电话号码成功！\n");
+					strcpy(changeNode->data.telephone, tele);
+					printf("修改电话号码成功！\n");
 				}
 				else
 				{
 					printf("请输入正确的电话号");
 				}
-				
+
 				break;
 
 			case 3:
@@ -556,8 +576,8 @@ void change(struct Node* headNode)
 			}
 		}
 	}
-		
-	
+
+
 }
 
 //查找功能
@@ -576,7 +596,7 @@ struct Node* searchInfoByData(struct Node* headNode)
 		pMove = pMove->next;
 	}
 	printf("姓名\t学号\t年龄\t性别\t电话\t\t高数成绩\t线代成绩\t程序成绩\t总成绩\t绩点\n");
-	printf("%s\t%s\t%d\t%s\t%s\t%d\t\t%d\t\t%d\t\t%d\t%.2lf\n", pMove->data.name, pMove->data.num, pMove->data.age, pMove->data.sex, pMove->data.telephone, pMove->data.math, pMove->data.Linear, pMove->data.C, pMove->data.total , pMove->data.grade );
+	printf("%s\t%s\t%d\t%s\t%s\t%d\t\t%d\t\t%d\t\t%d\t%.2lf\n", pMove->data.name, pMove->data.num, pMove->data.age, pMove->data.sex, pMove->data.telephone, pMove->data.math, pMove->data.Linear, pMove->data.C, pMove->data.total, pMove->data.grade);
 	return NULL;
 }
 
@@ -587,7 +607,7 @@ void printList(struct Node* headNode)
 	printf("姓名\t学号\t年龄\t性别\t电话\t\t高数成绩\t线代成绩\t程序成绩\t总成绩\t绩点\n");
 	while (pMove)
 	{
-		printf("%s\t%s\t%d\t%s\t%s\t%d\t\t%d\t\t%d\t\t%d\t%.2lf\n", pMove->data.name, pMove->data.num, pMove->data.age, pMove->data.sex, pMove->data.telephone, pMove->data.math, pMove->data.Linear, pMove->data.C, pMove->data.total, pMove->data.grade); 
+		printf("%s\t%s\t%d\t%s\t%s\t%d\t\t%d\t\t%d\t\t%d\t%.2lf\n", pMove->data.name, pMove->data.num, pMove->data.age, pMove->data.sex, pMove->data.telephone, pMove->data.math, pMove->data.Linear, pMove->data.C, pMove->data.total, pMove->data.grade);
 		pMove = pMove->next;
 	}
 	printf("\n");
@@ -612,7 +632,7 @@ struct Node* sortStudentListByTotal(struct Node* head)
 		struct student s;
 
 		p1 = head;
-// 简单选择排序
+		// 简单选择排序
 		while ((p1 = p1->next) != NULL)
 		{
 			max = p1;
@@ -637,7 +657,7 @@ struct Node* sortStudentListByTotal(struct Node* head)
 
 
 //文件的读取
-void readInfoToFile(struct Node* headNode,const char* fileName)
+void readInfoToFile(struct Node* headNode, const char* fileName)
 {
 	//1、打开文件
 	FILE* fp;//文件指针名 
@@ -652,11 +672,11 @@ void readInfoToFile(struct Node* headNode,const char* fileName)
 	{
 		memset(&data, 0, sizeof(student));
 		//2、读文件 
-	    while (fscanf(fp,"%s\t%s\t%d\t%s\t%s\t%d\t%d\t%d\t%d\t%lf", &data.name,&data.num, &data.age, &data.sex, &data.telephone,&data.math,&data.Linear,&data.C,&data.total,&data.grade)!= EOF)
+		while (fscanf(fp, "%s\t%s\t%d\t%s\t%s\t%d\t%d\t%d\t%d\t%lf", &data.name, &data.num, &data.age, &data.sex, &data.telephone, &data.math, &data.Linear, &data.C, &data.total, &data.grade) != EOF)
 		{
 			struct Node* newNode = createNode(data);
 			newNode->next = headNode->next;
-			 headNode->next=newNode ;
+			headNode->next = newNode;
 		}
 	}
 
@@ -676,7 +696,7 @@ void writeInfoToFile(struct Node* headNode, const char* fileName)
 	struct Node* pMove = headNode->next;
 	while (pMove)
 	{
-		fprintf(fp, "%s\t%s\t%d\t%s\t%s\t%d\t%d\t%d\t%d\t%.2lf\n", pMove->data.name, pMove->data.num, pMove->data.age, pMove->data.sex, pMove->data.telephone, pMove->data.math, pMove->data.Linear, pMove->data.C, pMove->data.total, pMove->data.grade );
+		fprintf(fp, "%s\t%s\t%d\t%s\t%s\t%d\t%d\t%d\t%d\t%.2lf\n", pMove->data.name, pMove->data.num, pMove->data.age, pMove->data.sex, pMove->data.telephone, pMove->data.math, pMove->data.Linear, pMove->data.C, pMove->data.total, pMove->data.grade);
 		pMove = pMove->next;
 	}
 	//关闭文件 
@@ -815,8 +835,8 @@ int main() {
 	{
 		Hello();
 		system("pause");
-		system("cls"); 
-		
+		system("cls");
+
 	}
 	return 0;
-} 
+}
